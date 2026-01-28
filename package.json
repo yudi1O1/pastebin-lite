@@ -1,0 +1,18 @@
+{
+  "name": "pastebin-lite",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@reduxjs/toolkit": "^2.2.0",
+    "react-redux": "^9.1.0",
+    "@upstash/redis": "^1.31.3",
+    "nanoid": "^5.0.0"
+  }
+}
