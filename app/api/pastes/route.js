@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
-import { redis } from "../../../../lib/redis";
-import { getNow } from "../../../../lib/time";
+import { redis } from "../../../lib/redis";
+import { getNow } from "../../../lib/time";
 
 export async function GET(req, { params }) {
   const { id } = params;

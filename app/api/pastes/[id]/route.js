@@ -1,11 +1,15 @@
-import { redis } from "../../../../lib/redis";
-import { getNow } from "../../../../lib/time";
+export const runtime = "nodejs";
 
+import { redis } from "../../../lib/redis";
+import { getNow } from "../../../lib/time";
 
 export async function GET(req, { params }) {
-  const paste = await redis.get(`paste:${params.id}`);
+  const { id } = params;
+
+  const paste = await redis.get(`paste:${id}`);
+
   if (!paste) {
-    return Response.json({ error: "Not found" }, { status: 404 });
+    return Response.json({ error: "Paste not found" }, { status: 404 });
   }
 
   const now = getNow(req);
@@ -18,15 +22,20 @@ export async function GET(req, { params }) {
     return Response.json({ error: "View limit exceeded" }, { status: 404 });
   }
 
-  paste.views += 1;
-  await redis.set(`paste:${params.id}`, paste);
+  const updatedPaste = {
+    ...paste,
+    views: paste.views + 1,
+  };
+
+  await redis.set(`paste:${id}`, updatedPaste);
 
   return Response.json({
-    content: paste.content,
+    content: updatedPaste.content,
+    views: updatedPaste.views,
     remaining_views:
-      paste.max_views === null ? null : paste.max_views - paste.views,
-    expires_at: paste.expires_at
-      ? new Date(paste.expires_at).toISOString()
-      : null,
+      updatedPaste.max_views === null
+        ? null
+        : updatedPaste.max_views - updatedPaste.views,
+    expires_at: updatedPaste.expires_at,
   });
 }
